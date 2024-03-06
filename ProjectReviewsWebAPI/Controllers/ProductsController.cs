@@ -22,8 +22,8 @@ namespace ProductReviewsWebAPI.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var product = _context.Products.ToList();
-            return Ok(product);
+            var products = _context.Products.ToList();
+            return Ok(products);
         }
 
         // GET api/<ProductsController>/5
