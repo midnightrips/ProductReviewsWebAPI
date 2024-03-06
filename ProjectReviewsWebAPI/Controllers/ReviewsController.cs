@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProjectReviewsWebAPI.Data;
 using ProjectReviewsWebAPI.Models;
 
@@ -17,19 +18,19 @@ namespace ProductReviewsWebAPI.Controllers
             _context = context;
         }
         
-        // GET: api/<ReviewsController>
+        // GET: api/Reviews
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetReview()
         {
             var reviews = _context.Reviews.ToList();
             return Ok(reviews);
         }
 
-        // GET api/<ReviewsController>/5
+        // GET api/Reviews/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult GetReview(int id)
         {
-            var review = _context.Reviews.Find(id);
+            var review = _context.Reviews.Include(r => r.Product).FirstOrDefault(r => r.Id ==id);
             if (review == null)
             {
                 return NotFound();
@@ -37,18 +38,18 @@ namespace ProductReviewsWebAPI.Controllers
             return Ok(review);
         }
 
-        // POST api/<ReviewsController>
+        // POST api/Reviews
         [HttpPost]
-        public IActionResult Post([FromBody] Review review)
+        public IActionResult PostReview(Review review)
         {
             _context.Reviews.Add(review);
             _context.SaveChanges();
             return StatusCode(201, review);
         }
 
-        // PUT api/<ReviewsController>/5
+        // PUT api/Reviews/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Review review)
+        public IActionResult PutReview(int id, Review review)
         {
             var existingReview = _context.Reviews.Where(r => r.Id == id).SingleOrDefault();
 

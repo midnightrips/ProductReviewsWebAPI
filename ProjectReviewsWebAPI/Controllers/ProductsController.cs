@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using ProductReviewsWebAPI.DataTransferObjects;
 using ProjectReviewsWebAPI.Data;
 using ProjectReviewsWebAPI.Models;
 
@@ -18,11 +20,23 @@ namespace ProductReviewsWebAPI.Controllers
             _context = context;
         }
 
-        // GET: api/<ProductsController>
+        // GET: api/Products
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetProduct()
         {
-            var products = _context.Products.ToList();
+            var products = _context.Products.Select(p => new ProductDTO
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                Reviews = p.Reviews.Select(r => new ReviewDTO
+                {
+                    Id = r.Id,
+                    Text = r.Text,
+                    Rating = r.Rating,
+                }).ToList(),
+            }).ToList();
+            
             return Ok(products);
         }
 
